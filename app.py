@@ -7,7 +7,7 @@ from mplsoccer import VerticalPitch
 # Configuração da página
 # ==========================
 st.set_page_config(layout="wide")
-st.title("Progressive Carries do Jogador")
+st.title("Progressive Carries")
 
 # ==========================
 # 1. DADOS DAS CORRIDAS
@@ -40,7 +40,7 @@ pitch = VerticalPitch(
     linewidth=1.2
 )
 
-fig, ax = pitch.draw(figsize=(8,10))
+fig, ax = pitch.draw(figsize=(6,8))
 
 # ==========================
 # 4. SETAS DAS CORRIDAS
