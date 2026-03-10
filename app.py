@@ -40,7 +40,7 @@ pitch = VerticalPitch(
     linewidth=1.2
 )
 
-fig, ax = pitch.draw(figsize=(2,3))
+fig, ax = pitch.draw(figsize=(5,7))
 
 # ==========================
 # 4. SETAS DAS CORRIDAS
