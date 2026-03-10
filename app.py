@@ -94,4 +94,4 @@ buf.seek(0)
 # ==========================
 # 8. EXIBIR NO STREAMLIT
 # ==========================
-st.image(buf, width=600)
+st.image(buf, width=1000)
