@@ -88,7 +88,7 @@ ax.set_title(
 # 7. SALVAR EM BUFFER COM DPI MENOR
 # ==========================
 buf = BytesIO()
-fig.savefig(buf, format="png", dpi=100, bbox_inches="tight")  # <- dpi reduzido
+fig.savefig(buf, format="png", dpi=50, bbox_inches="tight")  # <- dpi reduzido
 buf.seek(0)
 
 
