@@ -94,4 +94,7 @@ buf.seek(0)
 # ==========================
 # 8. EXIBIR NO STREAMLIT
 # ==========================
-st.pyplot(fig)
+col1, col2, col3 = st.columns([1,2,1])  # coluna central maior
+
+with col2:
+    st.image(buf, width=450)  # define largura em pixels
