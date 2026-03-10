@@ -83,6 +83,14 @@ ax.set_title(
 )
 
 # ==========================
-# 7. EXIBIR NO STREAMLIT
+# 7. SALVAR EM BUFFER COM DPI MENOR
+# ==========================
+buf = BytesIO()
+fig.savefig(buf, format="png", dpi=100, bbox_inches="tight")  # <- dpi reduzido
+buf.seek(0)
+
+
+# ==========================
+# 8. EXIBIR NO STREAMLIT
 # ==========================
 st.pyplot(fig)
