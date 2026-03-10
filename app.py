@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 from mplsoccer import VerticalPitch
+from io import BytesIO
+
 
 # ==========================
 # Configuração da página
