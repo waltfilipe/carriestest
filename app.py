@@ -91,9 +91,6 @@ buf = BytesIO()
 fig.savefig(buf, format="png", dpi=150, bbox_inches="tight")
 buf.seek(0)
 
-img = Image.open(buf)
-
-
 # ==========================
 # 8. EXIBIR NO STREAMLIT
 # ==========================
