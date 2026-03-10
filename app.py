@@ -94,7 +94,4 @@ buf.seek(0)
 # ==========================
 # 8. EXIBIR NO STREAMLIT
 # ==========================
-col1, col2, col3 = st.columns([1,2,1])  # coluna central maior
-
-with col2:
-    st.image(buf, width=600)  # define largura em pixels
+st.image(buf, width=600)
