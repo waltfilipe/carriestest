@@ -42,7 +42,7 @@ pitch = VerticalPitch(
     linewidth=1.2
 )
 
-fig, ax = pitch.draw(figsize=(5,7))
+fig, ax = pitch.draw(figsize=(6,8))
 
 # ==========================
 # 4. SETAS DAS CORRIDAS
@@ -97,4 +97,4 @@ buf.seek(0)
 col1, col2, col3 = st.columns([1,2,1])  # coluna central maior
 
 with col2:
-    st.image(buf, width=450)  # define largura em pixels
+    st.image(buf, width=600)  # define largura em pixels
