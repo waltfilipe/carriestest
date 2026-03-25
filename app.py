@@ -26,7 +26,6 @@ matches_data = {
         ("DUEL DEFENSIVO LOST", 65.49, 56.29, None),
         ("DUEL DEFENSIVO LOST", 53.35, 55.29, None),
         ("DUEL OFENSIVO LOST", 80.78, 66.93, None),
-        ("AERIAL WON", 53.18, 33.18, None),
     ],
     "Orlando": [
         ("DUEL OFENSIVO WON", 50.86, 55.79, None),
@@ -57,7 +56,6 @@ matches_data = {
     "South Florida": [
         ("DUEL DEFENSIVO LOST", 20.79, 55.45, None),
         ("BLOQUEIO", 20.07, 47.68, None),
-        ("AERIAL WON", 67.41, 24.73, None),
         ("DUEL DEFENSIVO WON", 27.11, 3.23, None),
         ("DUEL DEFENSIVO WON", 33.98, 14.43, None),
     ],
@@ -80,12 +78,12 @@ def get_style(event_type, has_video):
     # 1. DUELOS OFENSIVOS (Offensive Duels)
     if "OFENSIVO" in event_type:
         if "WON" in event_type:
-            # Circle (Light green)
-            return 'o', (0.3, 0.85, 0.3, 0.9), 110, 0.5
+            # Circle (Strong green)
+            return 'o', (0.1, 0.95, 0.1, 0.95), 110, 0.5
         if "LOST" in event_type:
-            # X marker (Light red)
-            alpha = 0.9 if has_video else 0.65
-            return 'x', (0.95, 0.3, 0.3, alpha), 120, 3.0
+            # X marker (Strong red)
+            alpha = 0.95 if has_video else 0.75
+            return 'x', (0.95, 0.1, 0.1, alpha), 120, 3.0
 
     # 2. DUELOS DEFENSIVOS (Defensive Duels)
     if "DEFENSIVO" in event_type:
@@ -272,17 +270,17 @@ with col_map:
     legend_elements = [
         # --- Offensive Duels ---
         Line2D([0], [0], marker='o', color='w', label='Offensive Duel Won',
-               markerfacecolor=(0, 0.7, 0, 0.9), markersize=10, linestyle='None'),
+               markerfacecolor=(0.1, 0.95, 0.1, 0.95), markersize=10, linestyle='None'),
 
         Line2D([0], [0], marker='x', color='w', label='Offensive Duel Lost',
-               markeredgecolor=(0.9, 0.2, 0.2, 0.9), markersize=10, markeredgewidth=2.5, linestyle='None'),
+               markeredgecolor=(0.95, 0.1, 0.1, 0.95), markersize=10, markeredgewidth=2.5, linestyle='None'),
 
         # --- Defensive Duels ---
         Line2D([0], [0], marker='s', color='w', label='Defensive Duel Won',
-               markerfacecolor=(0, 0.7, 0.7, 0.9), markersize=10, linestyle='None'),
+               markerfacecolor=(0.0, 0.6, 0.0, 0.9), markersize=10, linestyle='None'),
 
         Line2D([0], [0], marker='D', color='w', label='Defensive Duel Lost',
-               markerfacecolor=(0.9, 0.4, 0.1, 0.9), markersize=10, linestyle='None'),
+               markerfacecolor=(0.7, 0.0, 0.0, 0.9), markersize=10, linestyle='None'),
 
         # --- Other Events ---
         Line2D([0], [0], marker='*', color='w', label='Block/Bloqueio',
@@ -307,7 +305,8 @@ with col_map:
         title="Match Events",
         title_fontsize='medium',
         labelspacing=1.2,
-        borderpad=1.0
+        borderpad=1.0,
+        framealpha=0.95
     )
 
     legend.get_title().set_fontweight('bold')
