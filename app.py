@@ -20,14 +20,14 @@ st.caption("Click on the icons on the pitch to play the corresponding video anal
 # Data Setup (All English labels with new data)
 # ==========================
 matches_data = {
-    "IMG": [
+    "vs IMG": [
         ("DUEL OFENSIVO LOST", 35.40, 65.43, None),
         ("DUEL DEFENSIVO LOST", 24.43, 73.08, None),
         ("DUEL DEFENSIVO LOST", 65.49, 56.29, None),
         ("DUEL DEFENSIVO LOST", 53.35, 55.29, None),
         ("DUEL OFENSIVO LOST", 80.78, 66.93, None),
     ],
-    "Orlando": [
+    "vs Orlando": [
         ("DUEL OFENSIVO WON", 50.86, 55.79, None),
         ("DUEL DEFENSIVO WON", 56.68, 26.37, None),
         ("BLOQUEIO", 17.28, 49.64, None),
@@ -36,7 +36,7 @@ matches_data = {
         ("INTERCEPTACAO", 82.61, 64.77, None),
         ("DUEL DEFENSIVO WON", 70.47, 55.96, None),
     ],
-    "Weston": [
+    "vs Weston": [
         ("DUEL DEFENSIVO WON", 41.05, 27.20, None),
         ("INTERCEPT", 72.30, 10.08, None),
         ("DUEL DEFENSIVO WON", 33.90, 37.01, None),
@@ -53,7 +53,7 @@ matches_data = {
         ("DUEL DEFENSIVO LOST", 35.90, 53.13, None),
         ("DUEL DEFENSIVO LOST", 57.51, 75.57, None),
     ],
-    "South Florida": [
+    "vs South Florida": [
         ("DUEL DEFENSIVO LOST", 20.79, 55.45, None),
         ("BLOQUEIO", 20.07, 47.68, None),
         ("DUEL DEFENSIVO WON", 27.11, 3.23, None),
