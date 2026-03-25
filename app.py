@@ -376,12 +376,6 @@ with col_vid:
     col3.metric("Defensive Duels", f"{stats['def_wins']}/{stats['def_total']}", f"{stats['def_rate']:.1f}% Success")
 
     st.divider()
-    st.subheader("Aerial Performance")
-
-    ae1, ae2 = st.columns(2)
-    ae1.metric("Aerial Duels", f"{stats['aerial_wins']}/{stats['aerial_total']}", f"{stats['aerial_rate']:.1f}% Success")
-
-    st.divider()
     st.subheader("Zone Performance")
 
     zc1, zc2, zc3 = st.columns(3)
