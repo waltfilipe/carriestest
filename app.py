@@ -19,50 +19,59 @@ st.caption("Click on the icons on the pitch to play the corresponding video anal
 # ==========================
 # Data Setup (All English labels with new data)
 # ==========================
-events_raw = [
-    # -------- vs IMG --------
-    ("DUEL OFENSIVO LOST", 35.40, 65.43, None),
-    ("DUEL DEFENSIVO LOST", 24.43, 73.08, None),
-    ("DUEL DEFENSIVO LOST", 65.49, 56.29, None),
-    ("DUEL DEFENSIVO LOST", 53.35, 55.29, None),
-    ("DUEL OFENSIVO LOST", 80.78, 66.93, None),
-    ("AERIAL WON", 53.18, 33.18, None),
-    
-    # -------- vs Orlando --------
-    ("DUEL OFENSIVO WON", 50.86, 55.79, None),
-    ("DUEL DEFENSIVO WON", 56.68, 26.37, None),
-    ("BLOQUEIO", 17.28, 49.64, None),
-    ("FOULED", 80.45, 49.64, None),
-    ("DUEL OFENSIVO LOST", 100.73, 41.00, None),
-    ("INTERCEPTACAO", 82.61, 64.77, None),
-    ("DUEL DEFENSIVO WON", 70.47, 55.96, None),
-    
-    # -------- vs Weston --------
-    ("DUEL DEFENSIVO WON", 41.05, 27.20, None),
-    ("INTERCEPT", 72.30, 10.08, None),
-    ("DUEL DEFENSIVO WON", 33.90, 37.01, None),
-    ("DUEL OFENSIVO LOST", 94.24, 36.51, None),
-    ("DUEL OFENSIVO LOST", 33.90, 46.82, None),
-    ("INTERCEPT", 33.57, 43.99, None),
-    ("DUEL DEFENSIVO WON", 41.88, 12.74, None),
-    ("DUEL DEFENSIVO WON", 38.22, 23.21, None),
-    ("INTERCEPT", 69.14, 13.24, None),
-    ("DUEL DEFENSIVO WON", 48.03, 14.73, None),
-    ("DUEL DEFENSIVO LOST", 69.14, 41.83, None),
-    ("INTERCEPT", 65.15, 52.47, None),
-    ("FOULED", 40.22, 24.21, None),
-    ("DUEL DEFENSIVO LOST", 35.90, 53.13, None),
-    ("DUEL DEFENSIVO LOST", 57.51, 75.57, None),
-    
-    # -------- vs South Florida --------
-    ("DUEL DEFENSIVO LOST", 20.79, 55.45, None),
-    ("BLOQUEIO", 20.07, 47.68, None),
-    ("AERIAL WON", 67.41, 24.73, None),
-    ("DUEL DEFENSIVO WON", 27.11, 3.23, None),
-    ("DUEL DEFENSIVO WON", 33.98, 14.43, None),
-]
+matches_data = {
+    "IMG": [
+        ("DUEL OFENSIVO LOST", 35.40, 65.43, None),
+        ("DUEL DEFENSIVO LOST", 24.43, 73.08, None),
+        ("DUEL DEFENSIVO LOST", 65.49, 56.29, None),
+        ("DUEL DEFENSIVO LOST", 53.35, 55.29, None),
+        ("DUEL OFENSIVO LOST", 80.78, 66.93, None),
+        ("AERIAL WON", 53.18, 33.18, None),
+    ],
+    "Orlando": [
+        ("DUEL OFENSIVO WON", 50.86, 55.79, None),
+        ("DUEL DEFENSIVO WON", 56.68, 26.37, None),
+        ("BLOQUEIO", 17.28, 49.64, None),
+        ("FOULED", 80.45, 49.64, None),
+        ("DUEL OFENSIVO LOST", 100.73, 41.00, None),
+        ("INTERCEPTACAO", 82.61, 64.77, None),
+        ("DUEL DEFENSIVO WON", 70.47, 55.96, None),
+    ],
+    "Weston": [
+        ("DUEL DEFENSIVO WON", 41.05, 27.20, None),
+        ("INTERCEPT", 72.30, 10.08, None),
+        ("DUEL DEFENSIVO WON", 33.90, 37.01, None),
+        ("DUEL OFENSIVO LOST", 94.24, 36.51, None),
+        ("DUEL OFENSIVO LOST", 33.90, 46.82, None),
+        ("INTERCEPT", 33.57, 43.99, None),
+        ("DUEL DEFENSIVO WON", 41.88, 12.74, None),
+        ("DUEL DEFENSIVO WON", 38.22, 23.21, None),
+        ("INTERCEPT", 69.14, 13.24, None),
+        ("DUEL DEFENSIVO WON", 48.03, 14.73, None),
+        ("DUEL DEFENSIVO LOST", 69.14, 41.83, None),
+        ("INTERCEPT", 65.15, 52.47, None),
+        ("FOULED", 40.22, 24.21, None),
+        ("DUEL DEFENSIVO LOST", 35.90, 53.13, None),
+        ("DUEL DEFENSIVO LOST", 57.51, 75.57, None),
+    ],
+    "South Florida": [
+        ("DUEL DEFENSIVO LOST", 20.79, 55.45, None),
+        ("BLOQUEIO", 20.07, 47.68, None),
+        ("AERIAL WON", 67.41, 24.73, None),
+        ("DUEL DEFENSIVO WON", 27.11, 3.23, None),
+        ("DUEL DEFENSIVO WON", 33.98, 14.43, None),
+    ],
+}
 
-df = pd.DataFrame(events_raw, columns=["type", "x", "y", "video"])
+# Create DataFrames for each match and combined
+dfs_by_match = {}
+for match_name, events in matches_data.items():
+    dfs_by_match[match_name] = pd.DataFrame(events, columns=["type", "x", "y", "video"])
+
+# All games combined
+df_all = pd.concat(dfs_by_match.values(), ignore_index=True)
+full_data = {"All games": df_all}
+full_data.update(dfs_by_match)
 
 def get_style(event_type, has_video):
     """Returns marker, color (rgba), size, and linewidth based on event type"""
@@ -114,6 +123,119 @@ def get_style(event_type, has_video):
     # Default
     return 'o', (0.5, 0.5, 0.5, 0.8), 90, 0.5
 
+
+def compute_stats(df: pd.DataFrame) -> dict:
+    """Compute duel statistics"""
+    total = len(df)
+    
+    # Duel counts
+    is_duel = df['type'].str.contains('DUEL|AERIAL', case=False)
+    is_won = df['type'].str.contains('WON', case=False)
+    is_offensive = df['type'].str.contains('OFENSIVO|OFFENSIVE', case=False)
+    is_defensive = df['type'].str.contains('DEFENSIVO|DEFENSIVE', case=False)
+    
+    all_duels = df[is_duel]
+    total_duels = len(all_duels)
+    won_duels = all_duels[is_won].shape[0]
+    duel_rate = (won_duels / total_duels * 100) if total_duels > 0 else 0
+    
+    # Offensive
+    off_duels = df[is_offensive & is_duel]
+    off_total = len(off_duels)
+    off_wins = off_duels[is_won].shape[0]
+    off_rate = (off_wins / off_total * 100) if off_total > 0 else 0
+    
+    # Defensive
+    def_duels = df[is_defensive & is_duel]
+    def_total = len(def_duels)
+    def_wins = def_duels[is_won].shape[0]
+    def_rate = (def_wins / def_total * 100) if def_total > 0 else 0
+    
+    # Aerial
+    aerial_duels = df[df['type'].str.contains('AERIAL', case=False)]
+    aerial_total = len(aerial_duels)
+    aerial_wins = aerial_duels[is_won].shape[0]
+    aerial_rate = (aerial_wins / aerial_total * 100) if aerial_total > 0 else 0
+    
+    # Zone stats
+    central_mask = (df['y'] > 26.6) & (df['y'] < 53.3)
+    central_duels = df[central_mask & is_duel]
+    c_total = len(central_duels)
+    c_wins = central_duels[is_won].shape[0]
+    c_rate = (c_wins / c_total * 100) if c_total > 0 else 0
+    
+    lateral_duels = df[~central_mask & is_duel]
+    l_total = len(lateral_duels)
+    l_wins = lateral_duels[is_won].shape[0]
+    l_rate = (l_wins / l_total * 100) if l_total > 0 else 0
+    
+    # Other events
+    blocks = len(df[df['type'].str.contains('BLOQUEIO', case=False)])
+    intercepts = len(df[df['type'].str.contains('INTERCEPT', case=False)])
+    fouls = len(df[df['type'].str.contains('FOULED', case=False)])
+    
+    return {
+        "total": total,
+        "duel_total": total_duels,
+        "duel_wins": won_duels,
+        "duel_rate": duel_rate,
+        "off_total": off_total,
+        "off_wins": off_wins,
+        "off_rate": off_rate,
+        "def_total": def_total,
+        "def_wins": def_wins,
+        "def_rate": def_rate,
+        "aerial_total": aerial_total,
+        "aerial_wins": aerial_wins,
+        "aerial_rate": aerial_rate,
+        "central_total": c_total,
+        "central_wins": c_wins,
+        "central_rate": c_rate,
+        "lateral_total": l_total,
+        "lateral_wins": l_wins,
+        "lateral_rate": l_rate,
+        "blocks": blocks,
+        "intercepts": intercepts,
+        "fouls": fouls,
+    }
+
+
+# ==========================
+# Sidebar Configuration
+# ==========================
+st.sidebar.header("📋 Filter Configuration")
+selected_match = st.sidebar.radio("Select a match", list(full_data.keys()), index=0)
+
+st.sidebar.divider()
+
+# Additional filter
+filter_duel_type = st.sidebar.multiselect(
+    "Duel Type",
+    ["Offensive", "Defensive", "Aerial", "Other"],
+    default=["Offensive", "Defensive", "Aerial", "Other"]
+)
+
+st.sidebar.divider()
+st.sidebar.caption("Match filtered by selected options above")
+
+# Get selected data
+df = full_data[selected_match].copy()
+
+# Apply duel type filter
+if not all(x in filter_duel_type for x in ["Offensive", "Defensive", "Aerial", "Other"]):
+    mask = pd.Series([False] * len(df))
+    if "Offensive" in filter_duel_type:
+        mask |= df['type'].str.contains('OFENSIVO', case=False)
+    if "Defensive" in filter_duel_type:
+        mask |= df['type'].str.contains('DEFENSIVO', case=False)
+    if "Aerial" in filter_duel_type:
+        mask |= df['type'].str.contains('AERIAL', case=False)
+    if "Other" in filter_duel_type:
+        mask |= ~df['type'].str.contains('OFENSIVO|DEFENSIVO|AERIAL', case=False)
+    df = df[mask]
+
+# Compute stats always from full match data
+stats = compute_stats(full_data[selected_match])
 
 # ==========================
 # Main Layout
@@ -249,67 +371,28 @@ with col_vid:
     st.divider()
     st.subheader("Performance Statistics")
 
-    # Prepare analysis data
-    df['is_duel'] = df['type'].str.contains('DUEL|AERIAL', case=False)
-    df['is_won'] = df['type'].str.contains('WON', case=False)
-    df['is_offensive'] = df['type'].str.contains('OFENSIVO|OFFENSIVE', case=False)
-    df['is_defensive'] = df['type'].str.contains('DEFENSIVO|DEFENSIVE', case=False)
-
-    # Zone Logic (Statsbomb: Y goes from 0 to 80)
-    # Central Corridor: 26.6 to 53.3 | Lateral: 0-26.6 and 53.3-80
-    central_mask = (df['y'] > 26.6) & (df['y'] < 53.3)
-
-    # Overall Duel Stats
-    all_duels = df[df['is_duel']]
-    total_duels = len(all_duels)
-    won_duels = all_duels['is_won'].sum()
-    overall_rate = (won_duels / total_duels * 100) if total_duels > 0 else 0
-
-    # Offensive Duels
-    offensive_duels = df[df['is_offensive'] & df['is_duel']]
-    off_total = len(offensive_duels)
-    off_wins = offensive_duels['is_won'].sum()
-    off_rate = (off_wins / off_total * 100) if off_total > 0 else 0
-
-    # Defensive Duels
-    defensive_duels = df[df['is_defensive'] & df['is_duel']]
-    def_total = len(defensive_duels)
-    def_wins = defensive_duels['is_won'].sum()
-    def_rate = (def_wins / def_total * 100) if def_total > 0 else 0
-
     col1, col2, col3 = st.columns(3)
-    col1.metric("Overall Duels", f"{won_duels}/{total_duels}", f"{overall_rate:.1f}% Success")
-    col2.metric("Offensive Duels", f"{off_wins}/{off_total}", f"{off_rate:.1f}% Success")
-    col3.metric("Defensive Duels", f"{def_wins}/{def_total}", f"{def_rate:.1f}% Success")
+    col1.metric("Overall Duels", f"{stats['duel_wins']}/{stats['duel_total']}", f"{stats['duel_rate']:.1f}% Success")
+    col2.metric("Offensive Duels", f"{stats['off_wins']}/{stats['off_total']}", f"{stats['off_rate']:.1f}% Success")
+    col3.metric("Defensive Duels", f"{stats['def_wins']}/{stats['def_total']}", f"{stats['def_rate']:.1f}% Success")
+
+    st.divider()
+    st.subheader("Aerial Performance")
+
+    ae1, ae2 = st.columns(2)
+    ae1.metric("Aerial Duels", f"{stats['aerial_wins']}/{stats['aerial_total']}", f"{stats['aerial_rate']:.1f}% Success")
 
     st.divider()
     st.subheader("Zone Performance")
 
-    # Central Stats (all duels)
-    central_duels = df[central_mask & df['is_duel']]
-    c_total = len(central_duels)
-    c_wins = central_duels['is_won'].sum()
-    c_rate = (c_wins / c_total * 100) if c_total > 0 else 0
-
-    # Lateral Stats (all duels)
-    lateral_duels = df[~central_mask & df['is_duel']]
-    l_total = len(lateral_duels)
-    l_wins = lateral_duels['is_won'].sum()
-    l_rate = (l_wins / l_total * 100) if l_total > 0 else 0
-
     zc1, zc2 = st.columns(2)
-    zc1.metric("Central Zone", f"{c_wins}/{c_total}", f"{c_rate:.1f}% Success")
-    zc2.metric("Lateral Zones", f"{l_wins}/{l_total}", f"{l_rate:.1f}% Success")
+    zc1.metric("Central Zone", f"{stats['central_wins']}/{stats['central_total']}", f"{stats['central_rate']:.1f}% Success")
+    zc2.metric("Lateral Zones", f"{stats['lateral_wins']}/{stats['lateral_total']}", f"{stats['lateral_rate']:.1f}% Success")
 
     st.divider()
-    st.subheader("Event Type Breakdown")
-
-    # Count other events
-    blocks = len(df[df['type'].str.contains('BLOQUEIO', case=False)])
-    intercepts = len(df[df['type'].str.contains('INTERCEPT', case=False)])
-    fouls = len(df[df['type'].str.contains('FOULED', case=False)])
+    st.subheader("Other Events")
 
     ec1, ec2, ec3 = st.columns(3)
-    ec1.metric("Blocks", blocks)
-    ec2.metric("Interceptions", intercepts)
-    ec3.metric("Fouls", fouls)
+    ec1.metric("Blocks", stats["blocks"])
+    ec2.metric("Interceptions", stats["intercepts"])
+    ec3.metric("Fouls", stats["fouls"])
