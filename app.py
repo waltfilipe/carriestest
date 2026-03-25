@@ -283,7 +283,7 @@ with col_map:
                markerfacecolor=(0.7, 0.0, 0.0, 0.9), markersize=10, linestyle='None'),
 
         # --- Other Events ---
-        Line2D([0], [0], marker='*', color='w', label='Block/Bloqueio',
+        Line2D([0], [0], marker='*', color='w', label='Shot Block',
                markerfacecolor=(0.7, 0.3, 0.9, 0.8), markersize=12, linestyle='None'),
 
         Line2D([0], [0], marker='*', color='w', label='Interception',
