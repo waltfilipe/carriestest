@@ -77,44 +77,34 @@ def get_style(event_type, has_video):
     """Returns marker, color (rgba), size, and linewidth based on event type"""
     event_type = event_type.upper()
     
-    # 1. DUELOS AÉREOS (Aerial Duels)
-    if "AERIAL" in event_type:
-        if "WON" in event_type:
-            # Triangle up (Bright lime green)
-            return '^', (0.2, 0.9, 0.2, 0.9), 120, 1.5
-        if "LOST" in event_type:
-            # Triangle down (Dark red)
-            alpha = 0.9 if has_video else 0.15
-            return 'v', (0.7, 0, 0, alpha), 120, 1.5
-
-    # 2. DUELOS OFENSIVOS (Offensive Duels)
+    # 1. DUELOS OFENSIVOS (Offensive Duels)
     if "OFENSIVO" in event_type:
         if "WON" in event_type:
-            # Circle (Green)
-            return 'o', (0, 0.7, 0, 0.9), 100, 0.5
+            # Circle (Light green)
+            return 'o', (0.3, 0.85, 0.3, 0.9), 110, 0.5
         if "LOST" in event_type:
-            # X marker (Red)
-            alpha = 0.9 if has_video else 0.6
-            return 'x', (0.9, 0.2, 0.2, alpha), 110, 2.8
+            # X marker (Light red)
+            alpha = 0.9 if has_video else 0.65
+            return 'x', (0.95, 0.3, 0.3, alpha), 120, 3.0
 
-    # 3. DUELOS DEFENSIVOS (Defensive Duels)
+    # 2. DUELOS DEFENSIVOS (Defensive Duels)
     if "DEFENSIVO" in event_type:
         if "WON" in event_type:
-            # Square (Blue-green/Teal)
-            return 's', (0, 0.7, 0.7, 0.9), 100, 0.5
+            # Square (Dark green)
+            return 's', (0.0, 0.6, 0.0, 0.9), 110, 0.5
         if "LOST" in event_type:
-            # Diamond (Orange-red)
-            alpha = 0.9 if has_video else 0.6
-            return 'D', (0.9, 0.4, 0.1, alpha), 100, 2.2
+            # Diamond (Dark red)
+            alpha = 0.9 if has_video else 0.65
+            return 'D', (0.7, 0.0, 0.0, alpha), 110, 2.5
 
-    # 4. OTHER EVENTS
+    # 3. OTHER EVENTS
     if "BLOQUEIO" in event_type:
         # Star (Purple)
         return '*', (0.7, 0.3, 0.9, 0.8), 140, 0.5
 
     if "INTERCEPT" in event_type or "INTERCEPTACAO" in event_type:
-        # Plus sign (Blue)
-        return '+', (0.2, 0.5, 0.9, 0.8), 120, 2.0
+        # Star (Larger and bright blue)
+        return '*', (0.2, 0.6, 0.95, 0.9), 160, 0.8
 
     if "FOULED" in event_type:
         # Pentagon (Orange)
@@ -157,17 +147,28 @@ def compute_stats(df: pd.DataFrame) -> dict:
     aerial_wins = aerial_duels[is_won].shape[0]
     aerial_rate = (aerial_wins / aerial_total * 100) if aerial_total > 0 else 0
     
-    # Zone stats
-    central_mask = (df['y'] > 26.6) & (df['y'] < 53.3)
+    # Zone stats - Split into 3 zones
+    # Left corridor: y < 26.6
+    # Central corridor: 26.6 <= y <= 53.3
+    # Right corridor: y > 53.3
+    
+    left_mask = df['y'] < 26.6
+    left_duels = df[left_mask & is_duel]
+    left_total = len(left_duels)
+    left_wins = left_duels[is_won].shape[0]
+    left_rate = (left_wins / left_total * 100) if left_total > 0 else 0
+    
+    central_mask = (df['y'] >= 26.6) & (df['y'] <= 53.3)
     central_duels = df[central_mask & is_duel]
     c_total = len(central_duels)
     c_wins = central_duels[is_won].shape[0]
     c_rate = (c_wins / c_total * 100) if c_total > 0 else 0
     
-    lateral_duels = df[~central_mask & is_duel]
-    l_total = len(lateral_duels)
-    l_wins = lateral_duels[is_won].shape[0]
-    l_rate = (l_wins / l_total * 100) if l_total > 0 else 0
+    right_mask = df['y'] > 53.3
+    right_duels = df[right_mask & is_duel]
+    right_total = len(right_duels)
+    right_wins = right_duels[is_won].shape[0]
+    right_rate = (right_wins / right_total * 100) if right_total > 0 else 0
     
     # Other events
     blocks = len(df[df['type'].str.contains('BLOQUEIO', case=False)])
@@ -191,9 +192,15 @@ def compute_stats(df: pd.DataFrame) -> dict:
         "central_total": c_total,
         "central_wins": c_wins,
         "central_rate": c_rate,
-        "lateral_total": l_total,
-        "lateral_wins": l_wins,
-        "lateral_rate": l_rate,
+        "left_total": left_total,
+        "left_wins": left_wins,
+        "left_rate": left_rate,
+        "central_total": c_total,
+        "central_wins": c_wins,
+        "central_rate": c_rate,
+        "right_total": right_total,
+        "right_wins": right_wins,
+        "right_rate": right_rate,
         "blocks": blocks,
         "intercepts": intercepts,
         "fouls": fouls,
@@ -277,19 +284,12 @@ with col_map:
         Line2D([0], [0], marker='D', color='w', label='Defensive Duel Lost',
                markerfacecolor=(0.9, 0.4, 0.1, 0.9), markersize=10, linestyle='None'),
 
-        # --- Aerial Duels ---
-        Line2D([0], [0], marker='^', color='w', label='Aerial Won',
-               markerfacecolor=(0.2, 0.9, 0.2, 0.9), markersize=10, linestyle='None'),
-
-        Line2D([0], [0], marker='v', color='w', label='Aerial Lost',
-               markerfacecolor=(0.7, 0, 0, 0.8), markersize=10, linestyle='None'),
-
         # --- Other Events ---
         Line2D([0], [0], marker='*', color='w', label='Block/Bloqueio',
                markerfacecolor=(0.7, 0.3, 0.9, 0.8), markersize=12, linestyle='None'),
 
-        Line2D([0], [0], marker='+', color='w', label='Interception',
-               markeredgecolor=(0.2, 0.5, 0.9, 0.8), markersize=10, markeredgewidth=2, linestyle='None'),
+        Line2D([0], [0], marker='*', color='w', label='Interception',
+               markerfacecolor=(0.2, 0.6, 0.95, 0.9), markersize=14, linestyle='None'),
 
         Line2D([0], [0], marker='P', color='w', label='Fouled',
                markerfacecolor=(1, 0.5, 0, 0.8), markersize=10, linestyle='None'),
@@ -385,9 +385,10 @@ with col_vid:
     st.divider()
     st.subheader("Zone Performance")
 
-    zc1, zc2 = st.columns(2)
-    zc1.metric("Central Zone", f"{stats['central_wins']}/{stats['central_total']}", f"{stats['central_rate']:.1f}% Success")
-    zc2.metric("Lateral Zones", f"{stats['lateral_wins']}/{stats['lateral_total']}", f"{stats['lateral_rate']:.1f}% Success")
+    zc1, zc2, zc3 = st.columns(3)
+    zc1.metric("Left Corridor", f"{stats['left_wins']}/{stats['left_total']}", f"{stats['left_rate']:.1f}% Success")
+    zc2.metric("Central Corridor", f"{stats['central_wins']}/{stats['central_total']}", f"{stats['central_rate']:.1f}% Success")
+    zc3.metric("Right Corridor", f"{stats['right_wins']}/{stats['right_total']}", f"{stats['right_rate']:.1f}% Success")
 
     st.divider()
     st.subheader("Other Events")
